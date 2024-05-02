@@ -9,9 +9,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hive Game',
+      title: 'La Colmena🐝',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.yellow,
       ),
       home: HiveGame(),
     );
@@ -39,7 +39,7 @@ class _HiveGameState extends State<HiveGame> {
 
   void startGame() {
     setState(() {
-      board = List.generate(5, (_) => List.filled(5, ''));
+      board = List.generate(5, (_) => List.filled(5, '🐝'));
       playerHealth = 7;
       gameOver = false;
       revealedCells = {};
@@ -52,13 +52,17 @@ class _HiveGameState extends State<HiveGame> {
     // Place queen in a random non-corner cell
     queenRow = random.nextInt(3) + 1;
     queenCol = random.nextInt(3) + 1;
-    board[queenRow][queenCol] = 'Q';
+    board[queenRow][queenCol] = 'Reina 👑';
 
     // Place other bees randomly
     for (int row = 0; row < 5; row++) {
       for (int col = 0; col < 5; col++) {
-        if (board[row][col] != 'Q') {
-          List<String> beeTypes = ['L', 'W', 'D']; // Larva, Worker, Drone
+        if (board[row][col] != 'Reina 👑') {
+          List<String> beeTypes = [
+            'Larva',
+            'Obrera',
+            'Zangano'
+          ]; // Larva, Worker, Drone
           int randIndex = random.nextInt(beeTypes.length);
           board[row][col] = beeTypes[randIndex];
         }
@@ -72,17 +76,17 @@ class _HiveGameState extends State<HiveGame> {
         revealedCells.add(row * 5 + col);
         String cellContent = board[row][col];
         switch (cellContent) {
-          case 'Q':
+          case 'Reina 👑':
             gameOver = true;
             _showGameOverDialog('¡Encontraste a la Reina!');
             break;
-          case 'L':
+          case 'Larva':
             playerHealth -= 0;
             break;
-          case 'W':
+          case 'Obrera':
             playerHealth -= 1;
             break;
-          case 'D':
+          case 'Zangano':
             playerHealth -= 2;
             break;
         }
@@ -99,7 +103,7 @@ class _HiveGameState extends State<HiveGame> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Game Over'),
+          title: Text('Juego Terminado'),
           content: Text(message),
           actions: [
             TextButton(
@@ -119,22 +123,34 @@ class _HiveGameState extends State<HiveGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hive Game'),
+        title: Text('La Colmena🐝'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Puntos de Vida: $playerHealth',
-              style: TextStyle(fontSize: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Puntos de Vida: $playerHealth',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                SizedBox(width: 10), // Espacio entre el texto y el botón
+                ElevatedButton(
+                  onPressed: startGame,
+                  child: Text('Reiniciar Juego'),
+                ),
+              ],
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 2.0),
             GridView.builder(
               shrinkWrap: true,
               itemCount: 25,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
+                mainAxisSpacing: 3, // Elimina el espacio entre las celdas en el eje principal
+                crossAxisSpacing: 3, // Elimina el espacio entre las celdas en el eje secundario
               ),
               itemBuilder: (BuildContext context, int index) {
                 int row = index ~/ 5;
@@ -143,14 +159,14 @@ class _HiveGameState extends State<HiveGame> {
                   onTap: () => gameOver ? null : _revealCell(row, col),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      border: Border.all(color: Colors.black),
                       color: revealedCells.contains(index)
-                          ? Colors.grey
-                          : Colors.white,
+                          ? Colors.white
+                          : Colors.yellow,
                     ),
                     child: Center(
                       child: Text(
-                        revealedCells.contains(index) ? board[row][col] : '',
+                        revealedCells.contains(index) ? board[row][col] : '🐝',
                         style: TextStyle(fontSize: 20.0),
                       ),
                     ),
